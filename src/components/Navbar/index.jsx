@@ -9,9 +9,10 @@ import Auth from '../../config/Auth';
 const Navbar = (props) => {
   let onBG = "navbar-area bg-info"; 
   let offBG = "navbar-area";
-  const [counter,setCounter] = useState(offBG);
+  const [isHome,setIsHome] = useState(false)
+  const [counter,setCounter] = useState(!isHome && onBG);
 
-  const LoginButton = () => {
+  const LoginButton = (props) => {
 
       if(Auth.isAuthenticated()){
         return (
@@ -29,11 +30,16 @@ const Navbar = (props) => {
       
   }
 
+  const home = () => {
+    setIsHome(true)
+  }
+  
+
   const ListMenu = () => {
     if(Auth.isAuthenticated()){
       return (
         <>
-          <li className="nav-item"><Link to="/" onClick={() => {setCounter(offBG)}}><span className="page-scroll">Home</span></Link></li>
+          <li className="nav-item"><Link to="/" onClick={() => {setCounter(offBG); home()}}><span className="page-scroll">Home</span></Link></li>
           <li className="nav-item"><Link to="/books" onClick={()=>{setCounter(onBG)}}><span className="page-scroll">Data Buku</span></Link></li>
           <li className="nav-item"><Link to="/my-order" onClick={()=>{setCounter(onBG)}}><span className="page-scroll">Peminjaman Ku</span></Link></li>
           <li className="nav-item"><Link to="/books" onClick={()=>{setCounter(onBG)}}><span className="page-scroll">Informasi</span></Link></li>
