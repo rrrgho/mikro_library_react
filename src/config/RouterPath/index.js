@@ -11,7 +11,7 @@ const RouterPath = () => {
         <Switch>
           <Route path="/login" component={LoginPage}/>
           <Route exact path="/" component={HomePage}/>
-          <ProtectedRoutes path="/books" component={BooksPage} />
+          <Route path="/books" component={BooksPage} />
           <ProtectedRoutes path="/book-detail/:id" component={BookDetailPage} />
           <ProtectedRoutes path="/my-order" component={MyOrder} />
           <ProtectedRoutes path="/Profile" component={ProfilePage}/>

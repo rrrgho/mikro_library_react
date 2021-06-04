@@ -16,6 +16,7 @@ const HistoryOrder = (props) => {
 
     const testing = () => {
         console.log(props.historyUser.lastPage,props.historyUser.lastPage);
+        console.log(props.historyUser.books)
     }
     
     return (

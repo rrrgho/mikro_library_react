@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import BASE_URL from '../../config/Service/Base_Url'
 import { connect } from 'react-redux'
@@ -7,15 +7,19 @@ import ActionType from '../../config/Redux/actionType'
 
 const Pricing = (props) => {
 
+    const [isRefresh, setIsRefresh] = useState(false)
+
     const check = () => {
         console.log(props.popularStateSMA)
     }
 
-    const refreshData = () => {
-        props.updateSMK()
-        props.updateSMA()
-        props.updateSMP()
-        props.updateSD()
+    const refreshData = async () => {
+        setIsRefresh(true)
+        await props.updateSMK()
+        await props.updateSMA()
+        await props.updateSMP()
+        await props.updateSD()
+        setIsRefresh(false)
     }
 
     const syncSMK = () => {
@@ -45,126 +49,251 @@ const Pricing = (props) => {
                     <div className="row justify-content-center">
                     <div className="col-lg-6 col-md-10">
                         <div className="section-title text-center pb-25">
-                        <h3 className="title" onClick={() => {refreshData()}}>Siswa Terpopuler</h3>
+                        <h3 className="title">Siswa Terpopuler</h3>
                         <p className="text" onClick={() => [check()]}>Siswa Terpopuler berdasarkan jumlah point terbanyak akumulasi peminjaman</p>
-                        </div> {/* section title */}
+                        {!isRefresh &&
+                            <button className="btn btn-info" onClick={() => {refreshData()}}>
+                                Hi, Click disini untuk merefresh data baru dari siswa terpopuler ya !
+                            </button>
+                        }
+                        </div> 
                     </div>
-                    </div> {/* row */}
-                    <div className="row justify-content-center">
-                        {props.popularStateSMK && props.popularStateSMK.length > 0 ? props.popularStateSMK.map((item,key) => {
-                            return (
-                                <div className="col-lg-4 col-md-7 col-sm-9" key={key}>
-                                    <div className="pricing-style mt-30">
-                                    <div className="pricing-header text-center">
-                                        <h5 className="sub-title">{item.user.name}</h5>
-                                        <p className="month"><span className="price">{item.point}</span> point</p>
-                                    </div>
-                                    <div className="pricing-list text-center">
-                                        <ul>
-                                        <li><i className="lni lni-check-mark-circle text-center" /> UNIT {item.user.unit_name}</li>
-                                        </ul>
-                                    </div>
-                                    <div className="pricing-btn rounded-buttons text-center">
-                                        <a className="main-btn rounded-one">{item.user.class_name}</a>
-                                    </div>    
-                                    </div> {/* pricing style one */}
-                                </div>
-                            )
-                        }):
-                        <div className="col-md-12 col-lg-12 text-center mt-5">
-                            <span className="badge badge-info p-3">Tidak ada siswa terpopuler dipublish untuk jenjang SMK</span>
-                            <span className="badge badge-success p-3 ml-1" style={{cursor:'pointer'}} onClick={() => {syncSMK()}}>RELOAD</span>
+                    </div> 
+                    
+                    {isRefresh 
+                    ?
+                        <div className="row justify-content-center">
+                            <div className="col-12 text-center">
+                                <p>Loading...</p>
+                            </div>
                         </div>
-                        }                
-                    </div>
+                    :
+                        <>
+                            <div className="row justify-content-center">
+                                {props.popularStateSMK && props.popularStateSMK.length > 0 ? props.popularStateSMK.map((item,key) => {
+                                    return (
+                                        <div className="col-lg-4 col-md-7 col-sm-9" key={key}>
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">{item.user.name}</h5>
+                                                <p className="month"><span className="price">{item.point}</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT {item.user.unit_name}</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">{item.user.class_name}</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                    )
+                                }):
+                                    <>
+                                        <div className="col-lg-4 col-md-7 col-sm-9">
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">?????</h5>
+                                                <p className="month"><span className="price">1???</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT ???</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">Kelas ???</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                        <div className="col-lg-4 col-md-7 col-sm-9">
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">?????</h5>
+                                                <p className="month"><span className="price">1???</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT ???</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">Kelas ???</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                        <div className="col-lg-4 col-md-7 col-sm-9">
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">?????</h5>
+                                                <p className="month"><span className="price">1???</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT ???</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">Kelas ???</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                    </>
+                                }                
+                            </div>
 
-                    <div className="row justify-content-center">
-                        {props.popularStateSMA && props.popularStateSMA.length > 0 ? props.popularStateSMA.map((item,key) => {
-                            return (
-                                <div className="col-lg-4 col-md-7 col-sm-9" key={key}>
-                                    <div className="pricing-style mt-30">
-                                    <div className="pricing-header text-center">
-                                        <h5 className="sub-title">{item.user.name}</h5>
-                                        <p className="month"><span className="price">{item.point}</span> point</p>
-                                    </div>
-                                    <div className="pricing-list text-center">
-                                        <ul>
-                                        <li><i className="lni lni-check-mark-circle text-center" /> UNIT {item.user.unit_name}</li>
-                                        </ul>
-                                    </div>
-                                    <div className="pricing-btn rounded-buttons text-center">
-                                        <a className="main-btn rounded-one">{item.user.class_name}</a>
-                                    </div>    
-                                    </div> {/* pricing style one */}
-                                </div>
-                            )
-                        }) : 
-                        
-                        <div className="col-md-12 col-lg-12 text-center mt-5">
-                            <span className="badge badge-info p-3">Tidak ada siswa terpopuler dipublish untuk jenjang SMA</span>
-                            <span className="badge badge-success p-3 ml-1" style={{cursor:'pointer'}} onClick={() => {syncSMA()}}>RELOAD</span>
-                        </div>
-                        }              
-                    </div>
+                            <div className="row justify-content-center">
+                                {props.popularStateSMA && props.popularStateSMA.length > 0 ? props.popularStateSMA.map((item,key) => {
+                                    return (
+                                        <div className="col-lg-4 col-md-7 col-sm-9" key={key}>
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">{item.user.name}</h5>
+                                                <p className="month"><span className="price">{item.point}</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT {item.user.unit_name}</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">{item.user.class_name}</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                    )
+                                }):
+                                    <>
+                                        <div className="col-lg-4 col-md-7 col-sm-9">
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">?????</h5>
+                                                <p className="month"><span className="price">1???</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT ???</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">Kelas ???</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                        <div className="col-lg-4 col-md-7 col-sm-9">
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">?????</h5>
+                                                <p className="month"><span className="price">1???</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT ???</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">Kelas ???</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                        <div className="col-lg-4 col-md-7 col-sm-9">
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">?????</h5>
+                                                <p className="month"><span className="price">1???</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT ???</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">Kelas ???</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                    </>
+                                }              
+                            </div>
 
-                    <div className="row justify-content-center">
-                        {props.popularStateSMP && props.popularStateSMP.length > 0 ? props.popularStateSMP.map((item,key) => {
-                            return (
-                                <div className="col-lg-4 col-md-7 col-sm-9" key={key}>
-                                    <div className="pricing-style mt-30">
-                                    <div className="pricing-header text-center">
-                                        <h5 className="sub-title">{item.user.name}</h5>
-                                        <p className="month"><span className="price">{item.point}</span> point</p>
-                                    </div>
-                                    <div className="pricing-list text-center">
-                                        <ul>
-                                        <li><i className="lni lni-check-mark-circle text-center" /> UNIT {item.user.unit_name}</li>
-                                        </ul>
-                                    </div>
-                                    <div className="pricing-btn rounded-buttons text-center">
-                                        <a className="main-btn rounded-one">{item.user.class_name}</a>
-                                    </div>    
-                                    </div> {/* pricing style one */}
-                                </div>
-                            )
-                        }) : 
-                        
-                        <div className="col-md-12 col-lg-12 text-center mt-5">
-                            <span className="badge badge-info p-3">Tidak ada siswa terpopuler dipublish untuk jenjang SMP</span>
-                            <span className="badge badge-success p-3 ml-1" style={{cursor:'pointer'}} onClick={() => {syncSMP()}}>RELOAD</span>
-                        </div>
-                        }              
-                    </div>
+                            <div className="row justify-content-center">
+                                {props.popularStateSMP && props.popularStateSMP.length > 0 ? props.popularStateSMP.map((item,key) => {
+                                    return (
+                                        <div className="col-lg-4 col-md-7 col-sm-9" key={key}>
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">{item.user.name}</h5>
+                                                <p className="month"><span className="price">{item.point}</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT {item.user.unit_name}</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">{item.user.class_name}</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                    )
+                                }):
+                                    <>
+                                        <div className="col-lg-4 col-md-7 col-sm-9">
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">?????</h5>
+                                                <p className="month"><span className="price">1???</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT ???</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">Kelas ???</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                        <div className="col-lg-4 col-md-7 col-sm-9">
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">?????</h5>
+                                                <p className="month"><span className="price">1???</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT ???</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">Kelas ???</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                        <div className="col-lg-4 col-md-7 col-sm-9">
+                                            <div className="pricing-style mt-30">
+                                            <div className="pricing-header text-center">
+                                                <h5 className="sub-title">?????</h5>
+                                                <p className="month"><span className="price">1???</span> point</p>
+                                            </div>
+                                            <div className="pricing-list text-center">
+                                                <ul>
+                                                <li><i className="lni lni-check-mark-circle text-center" /> UNIT ???</li>
+                                                </ul>
+                                            </div>
+                                            <div className="pricing-btn rounded-buttons text-center">
+                                                <a className="main-btn rounded-one">Kelas ???</a>
+                                            </div>    
+                                            </div> 
+                                        </div>
+                                    </>
+                                }              
+                            </div>
+                        </>
+                    }
 
-                    <div className="row justify-content-center">
-                        {props.popularStateSD && props.popularStateSD.length > 0 ? props.popularStateSD.map((item,key) => {
-                            return (
-                                <div className="col-lg-4 col-md-7 col-sm-9" key={key}>
-                                    <div className="pricing-style mt-30">
-                                    <div className="pricing-header text-center">
-                                        <h5 className="sub-title">{item.user.name}</h5>
-                                        <p className="month"><span className="price">{item.point}</span> point</p>
-                                    </div>
-                                    <div className="pricing-list text-center">
-                                        <ul>
-                                        <li><i className="lni lni-check-mark-circle text-center" /> UNIT {item.user.unit_name}</li>
-                                        </ul>
-                                    </div>
-                                    <div className="pricing-btn rounded-buttons text-center">
-                                        <a className="main-btn rounded-one">{item.user.class_name}</a>
-                                    </div>    
-                                    </div> {/* pricing style one */}
-                                </div>
-                            )
-                        }) : 
-                        
-                        <div className="col-md-12 col-lg-12 text-center mt-5">
-                            <span className="badge badge-info p-3">Tidak ada siswa terpopuler dipublish untuk jenjang SD</span>
-                            <span className="badge badge-success p-3 ml-1" style={{cursor:'pointer'}} onClick={() => {syncSD()}}>RELOAD</span>
-                        </div>
-                        }              
-                    </div>
-                </div> {/* container */}
+                </div>
             </section>
         </>
     )

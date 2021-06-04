@@ -1,17 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
 import Auth from '../../config/Auth';
 
 
 
-const Navbar = (props) => {
+const Navbar = ({breadcrumbs,props}) => {
   let onBG = "navbar-area bg-info"; 
   let offBG = "navbar-area";
   const [isHome,setIsHome] = useState(false)
-  const [counter,setCounter] = useState(!isHome && onBG);
-
+  const [counter,setCounter] = useState(offBG);
   const LoginButton = (props) => {
 
       if(Auth.isAuthenticated()){
@@ -52,6 +51,7 @@ const Navbar = (props) => {
       return(
           <>
             <li className="nav-item"><Link to="/" onClick={() => {setCounter(offBG)}}><span className="page-scroll">Home</span></Link></li>
+            <li className="nav-item"><Link to="/books" onClick={()=>{setCounter(onBG)}}><span className="page-scroll">Data Buku</span></Link></li>
             <li className="nav-item"><Link to="/books" onClick={()=>{setCounter(onBG)}}><span className="page-scroll">Informasi</span></Link></li>
             <li className="nav-item"><Link to="/books" onClick={()=>{setCounter(onBG)}}><span className="page-scroll">Tentang</span></Link></li>
             <li className="nav-item"><Link to="/books" onClick={()=>{setCounter(onBG)}}><span className="page-scroll">Kontak</span></Link></li>

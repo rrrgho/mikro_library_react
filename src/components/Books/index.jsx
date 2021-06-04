@@ -10,18 +10,25 @@ const Books = (props) => {
     const [inSearch,setInSearch] = useState(false)
 
     const getBook = async () => {
-        let send = await GET(`book-data?page=${props.booksData.page}`);
-        let result = send.data.data
-        let array = books ?? []
-        result.data.map(item =>{
-            array.push(item)
+        await GET(`book-data?page=${props.booksData.page}`)
+        .then(response => {
+            let result = response.data.data
+            let array = books ?? []
+            result.data.map(item =>{
+                array.push(item)
+            })
+            let dataBookState = {
+                data : array,
+                page : props.booksData.page + 1
+            }
+            props.updateBook(dataBookState)
         })
+        .catch((error) => {
+            alert("Tidak ada jaringan internet !")
+        })
+        
 
-        let dataBookState = {
-            data : array,
-            page : props.booksData.page + 1
-        }
-        props.updateBook(dataBookState)
+        
     }
 
     const searchBook = async () => {

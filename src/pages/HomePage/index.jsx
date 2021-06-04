@@ -7,7 +7,7 @@ const HomePage = () => {
     return (
         <>
             <Banner />
-            <BooksPopular />
+            {/* <BooksPopular /> */}
             <Pricing />
         </>
     )
